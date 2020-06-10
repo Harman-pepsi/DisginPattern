@@ -68,6 +68,27 @@ class LazyStyle_ThreadUnSafe{
     }
 }
 
+//懒汉式--->线程安全，同步方法
+/**
+ 优缺点说明:
+ |-解决了线程不安全问题
+ |-效率太低了，每个线程再想获得类的实例的时候，执行getInstance()方法都要进行同步。而其实这个方法只执行一次实例化代码就够了，后面的想获得该类实例，直接return就行了。方法进行同步效率太低。
+ 结论:在实际开发中，不推荐使用
+ **/
+class LazyStyle_ThreadWithSafe{
+    //构造器私有化
+    private LazyStyle_ThreadWithSafe(){}
+    //创建对象
+    private static LazyStyle_ThreadWithSafe instance;
+    //创建获取对象实例的公共接口，添加同步代码块来解决线程问题
+    public static synchronized LazyStyle_ThreadWithSafe getInstance(){
+        if(instance == null){
+            instance = new LazyStyle_ThreadWithSafe();
+        }
+        return instance;
+    }
+}
+
 public class SingletonPattern {
     public static void main(String[] args) {
         //饿汉式--->静态变量
@@ -91,5 +112,11 @@ public class SingletonPattern {
         System.out.println(instance6.hashCode()); //2133927002
         System.out.println(instance5 == instance6); //true
 
+        //懒汉式--->线程安全
+        LazyStyle_ThreadWithSafe instance7 = LazyStyle_ThreadWithSafe.getInstance();
+        LazyStyle_ThreadWithSafe instance8 = LazyStyle_ThreadWithSafe.getInstance();
+        System.out.println(instance7.hashCode()); //1836019240
+        System.out.println(instance8.hashCode()); //1836019240
+        System.out.println(instance7 == instance8); //true
     }
 }

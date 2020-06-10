@@ -160,6 +160,17 @@ class SingletonPattern_InnerStaticClass {
     }
 }
 
+//枚举
+/**
+ 优缺点分析:
+ |-这借助JDK1.5中添加的枚举来实现单例模式。不仅能避免多线程同步问题，而且还能防止反序列化重新创建新的对象。
+ |-这种方式是Effective Java作者Josh Bloch提倡的方式
+ 结论:强烈推荐使用
+ **/
+enum Singleton{
+    INSTANCE;
+}
+
 public class SingletonPattern {
     public static void main(String[] args) {
         //饿汉式--->静态变量
@@ -210,5 +221,12 @@ public class SingletonPattern {
         System.out.println(instance13.hashCode()); //856419764
         System.out.println(instance14.hashCode()); //856419764
         System.out.println(instance13 == instance14); //true
+
+        //枚举
+        Singleton instance15 = Singleton.INSTANCE;
+        Singleton instance16 = Singleton.INSTANCE;
+        System.out.println(instance15.hashCode()); //621009875
+        System.out.println(instance16.hashCode()); //621009875
+        System.out.println(instance15 == instance16); //true
     }
 }

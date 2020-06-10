@@ -112,6 +112,32 @@ class LazyStyle_ThreadWithSafeOfUseSynBlock{
     }
 }
 
+//双重检查
+/**
+ 优缺点分析:
+ |-双重检查概念是多线程开发中常使用到的，如代码所示，我们进行两次if(Singleton == null)的检查，这样就可以保证线程安全了
+ |-这样实例化代码只用执行一次，后面在此访问时，判断if(Singleton == null)，直接return实例化对象，也避免了反复进行方法的同步
+ |-线程安全；延迟加载；效率较高
+ 结论：在实际开发中，推荐使用这种设计模式
+ **/
+class LazyStyle_DoubleCheck{
+    //构造器私有化
+    private LazyStyle_DoubleCheck(){}
+    //创建对象
+    private static LazyStyle_DoubleCheck instance;
+    //提供一个静态的公共接口，加入双重检查解决线程安全问题，同时解决懒加载效率问题
+    public static LazyStyle_DoubleCheck getInstance(){
+        if(instance == null){
+            synchronized (LazyStyle_DoubleCheck.class){
+                if(instance == null){
+                    instance = new LazyStyle_DoubleCheck();
+                }
+            }
+        }
+        return instance;
+    }
+}
+
 public class SingletonPattern {
     public static void main(String[] args) {
         //饿汉式--->静态变量
@@ -148,5 +174,12 @@ public class SingletonPattern {
         System.out.println(instance9.hashCode()); //325040804
         System.out.println(instance10.hashCode()); //325040804
         System.out.println(instance9 == instance10); //true
+
+        //懒汉式--->线程安全，双重检查
+        LazyStyle_DoubleCheck instance11 = LazyStyle_DoubleCheck.getInstance();
+        LazyStyle_DoubleCheck instance12 = LazyStyle_DoubleCheck.getInstance();
+        System.out.println(instance11.hashCode()); //1173230247
+        System.out.println(instance12.hashCode()); //1173230247
+        System.out.println(instance11 == instance12); //true
     }
 }

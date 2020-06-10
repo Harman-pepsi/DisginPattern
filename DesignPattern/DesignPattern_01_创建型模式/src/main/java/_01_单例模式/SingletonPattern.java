@@ -89,6 +89,29 @@ class LazyStyle_ThreadWithSafe{
     }
 }
 
+//懒汉式--->线程安全，同步代码块
+/**
+ 优缺点说明:
+ |-这种方法本意是想对上述线程安全,同步方法实现方式的改进，因为前面同步方法效率太低，改为同步产生实例实例化的代码块
+ |-但是这种同步并不是能起到线程同步的作用。跟上一个线程不安全实现方式遇到的情形一样，假如一个线程进入了if(instance == null){...}判断代码块，还未来得及往下执行，另一个线程也通过了这个判断语句，这是便会产生多个实例
+ 结论：在实际开发中，不能使用这种方式
+ **/
+class LazyStyle_ThreadWithSafeOfUseSynBlock{
+    //构造器私有化
+    private LazyStyle_ThreadWithSafeOfUseSynBlock(){}
+    //创建对象
+    private static LazyStyle_ThreadWithSafeOfUseSynBlock instance;
+    //提供一个静态的公有方法，加入同步处理代码，解决线程安全问题
+    public static LazyStyle_ThreadWithSafeOfUseSynBlock getInstance(){
+        if(instance == null){
+            synchronized (LazyStyle_ThreadWithSafeOfUseSynBlock.class){
+                instance = new LazyStyle_ThreadWithSafeOfUseSynBlock();
+            }
+        }
+        return instance;
+    }
+}
+
 public class SingletonPattern {
     public static void main(String[] args) {
         //饿汉式--->静态变量
@@ -112,11 +135,18 @@ public class SingletonPattern {
         System.out.println(instance6.hashCode()); //2133927002
         System.out.println(instance5 == instance6); //true
 
-        //懒汉式--->线程安全
+        //懒汉式--->线程安全 同步方法
         LazyStyle_ThreadWithSafe instance7 = LazyStyle_ThreadWithSafe.getInstance();
         LazyStyle_ThreadWithSafe instance8 = LazyStyle_ThreadWithSafe.getInstance();
         System.out.println(instance7.hashCode()); //1836019240
         System.out.println(instance8.hashCode()); //1836019240
         System.out.println(instance7 == instance8); //true
+
+        //懒汉式--->线程安全 同步代码块
+        LazyStyle_ThreadWithSafeOfUseSynBlock instance9 = LazyStyle_ThreadWithSafeOfUseSynBlock.getInstance();
+        LazyStyle_ThreadWithSafeOfUseSynBlock instance10 = LazyStyle_ThreadWithSafeOfUseSynBlock.getInstance();
+        System.out.println(instance9.hashCode()); //325040804
+        System.out.println(instance10.hashCode()); //325040804
+        System.out.println(instance9 == instance10); //true
     }
 }

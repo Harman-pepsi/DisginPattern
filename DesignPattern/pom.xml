@@ -10,6 +10,7 @@
     <version>1.0</version>
     <modules>
         <module>DesignPattern_01_创建型模式</module>
+        <module>DesignPattern_02_结构性模式</module>
     </modules>
 
     <properties>

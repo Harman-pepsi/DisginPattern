@@ -11,6 +11,7 @@
     <modules>
         <module>DesignPattern_01_创建型模式</module>
         <module>DesignPattern_02_结构性模式</module>
+        <module>DesignPattern_00_设计模式原则</module>
     </modules>
 
     <properties>

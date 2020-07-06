@@ -83,7 +83,7 @@ class FoldStyle extends Phone{
         super.call();
     }
 
-    protected void close(){
+    protected void close() {
         super.close();
     }
 
